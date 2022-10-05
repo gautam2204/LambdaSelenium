@@ -1,0 +1,25 @@
+service: lambda-test-runner
+app: lambda-test-runner
+
+provider:
+  name: aws
+  runtime: python3.7
+  region: ap-south-1
+  memorySize: 512
+  timeout: 900
+  iamManagedPolicies:
+    - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+    - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+
+functions:
+  lambda_runner:
+    handler: handler.lambda_runner
+    events:
+      - http:
+          path: lambda_runner
+          method: get
+    layers:
+      - ${cf:lambda-selenium-layer-dev.SeleniumLayerExport}
+      - ${cf:lambda-selenium-layer-dev.ChromedriverLayerExport}
+      - ${cf:lambda-selenium-layer-dev.ChromeLayerExport}
+      - ${cf:lambda-tests-layer-dev.FeaturesLayerExport}
